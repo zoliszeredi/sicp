@@ -2,7 +2,7 @@
 
 *  The Elements of Programming
     * [Ex 01][1] Evaluating a sequence of expressions
-    * [Ex 02][2] Translating from ifix to prefix
+    * [Ex 02][2] Translating from infix to prefix
     * [Ex 03][3] Sum of squares of the two largest inputs
     * [Ex 04][4] Evaluating operator
     * [Ex 05][5] How does the expression evaluate
@@ -19,9 +19,9 @@
     * [Ex 29][29] Simpson rule
     * [Ex 46][46] Iterative improvement
 
-[1]: evaluation.ss
-[2]: prefix_tr.ss
-[3]: sqr_sum.ss
+[1]: simple_evaluation.ss
+[2]: infix_to_prefix.ss
+[3]: sum_of_squares_of_largest_two.ss
 [4]: op_eval.ss
 [5]: evaluation_order.ss
 [6]: new_if.ss
