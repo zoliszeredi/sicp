@@ -1,4 +1,4 @@
-(load "util.ss")
+(load "../util/unittest.ss")
 
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)
@@ -39,5 +39,5 @@
 	 (cbrt-iter (improve guess))))
   (cbrt-iter 1.0))
 
-(asserteq "sqrt 2" (sqrt 2) 1.414213)
-(asserteq "cbrt 8" (cbrt 8) 2.000000)
+(asserteq (sqrt 2) 1.414213)
+(asserteq (cbrt 8) 2.000000)
