@@ -1,4 +1,4 @@
-(load "../util/unittest.ss")
+(load "../../util/unittest.ss")
 
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)

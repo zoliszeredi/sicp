@@ -1,4 +1,4 @@
-(load "../util/unittest.ss")
+(load "../../util/unittest.ss")
 
 (define (sum-of-squares-of-largest-two a b c)
   (let ((smallest (min3 a b c)))

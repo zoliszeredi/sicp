@@ -13,12 +13,12 @@
 ;; evaluation(the latter is also called lazy-evaluation) is that it evaluates
 ;; expressions only when necessary but at the cost of multiple similair calls.
 
-;; Case 2. Normal-Order (lazy)
+;; Case 1. Normal-Order (lazy)
 ;;
 ;; (test 0 (p))
 ;; (= 0 0) evaluates to 0 
 
-;; Case 1. Apllicative-Order
+;; Case 2. Apllicative-Order
 ;;
 ;; (test 0 (p))
 ;; Evaluates all operands before the call. Since 0 is evaluated, the next one 
