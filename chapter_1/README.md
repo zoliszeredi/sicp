@@ -9,12 +9,10 @@
     * [Ex 06][0106] What happens when we define a new if [Scheme][6]
     * [Ex 07][0107] A better good-enough function [Scheme][7]
     * [Ex 08][0108] Cube root using Newton's method [Scheme][8]
-
 *  Procedures and the Processes They Generate
     * [Ex 09][0109] Iterative vs recursive evaluation [Scheme][9]
     * [Ex 10][0110] Cube root using Newton's method [Scheme][10]
     * [Ex 28][0128] Miller-Rabin primality test [Scheme][28]
-
 *  Formulating Abstractions with Higher-Order Procedures
     * [Ex 29][0129] Simpson rule [Scheme][29]
     * [Ex 46][0146] Iterative improvement [Scheme][46]
@@ -46,9 +44,9 @@
 [4]: section_1/evaluating_to_operators.ss
 [5]: section_1/evaluation_order.ss
 [6]: section_1/new_if.ss
-[7]: section_1/newton.ss
+[7]: section_1/good_enough.ss
 [8]: section_1/cube_root.ss
-[9]: peano_arithmetic.ss
+[9]: section_2/peano_arithmetic.ss
 [10]: cube_root.ss
 [28]: fermat.ss
 [29]: simpson.ss
