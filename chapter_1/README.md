@@ -47,7 +47,7 @@
 [5]: section_1/evaluation_order.ss
 [6]: section_1/new_if.ss
 [7]: section_1/newton.ss
-[8]: section_1/newton.ss
+[8]: section_1/cube_root.ss
 [9]: peano_arithmetic.ss
 [10]: cube_root.ss
 [28]: fermat.ss
