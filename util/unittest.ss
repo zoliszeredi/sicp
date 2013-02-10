@@ -24,7 +24,9 @@
     (>= epsilon delta)))
 
 (define (real-not-equal? first second . decimals-accuracy)
-  (not (real-equal? first second (car decimals-accuracy))))
+  (if (null? decimals-accuracy)
+      (not (real-equal? first second))
+      (not (real-equal? (car decimals-accuracy)))))
 
 (define (assert-int-eq first second)
   (if (integer-not-equal? first second)

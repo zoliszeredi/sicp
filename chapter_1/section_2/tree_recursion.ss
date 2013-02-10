@@ -5,23 +5,19 @@
 	 (* 2 (f-rec (- n 2)))
 	 (* 3 (f-rec (- n 3))))))
 
-
-;; FIXME
-;; Not yet functional
-
-(define (f-iter sum last second-last third-last)
-  (let ((current (+ last
-		    (* 2 second-last)
-		    (* 3 third-last))))
-    (f-iter (+ sum current)
-	    current
-	    last
-	    second-last)))
-	  
-  
+	
+(define (f-iter-helper min mid max count n)
+  (if (= count n) 
+      min 
+      (f-iter-helper mid 
+		     max (+ max
+			 (* 2 mid)
+			 (* 3 min))
+		     (+ count 1)
+		     n)))
+ 
+(define (f-iter n)
+  (f-iter-helper 0 1 2 0 n))
 
 (load "../../util/unittest.ss")
-(asserteq 0 (f-rec 0))
-(asserteq 4 (f-rec 3))
-(asserteq 1892 (f-rec 10))
-
+(asserteq (f-rec 25) (f-iter 25))
