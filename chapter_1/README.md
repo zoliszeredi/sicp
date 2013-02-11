@@ -11,7 +11,16 @@
     * [Ex 08][0108] Cube root using Newton's method [Scheme][8]
 *  Procedures and the Processes They Generate
     * [Ex 09][0109] Iterative vs recursive evaluation [Scheme][9]
-    * [Ex 10][0110] Cube root using Newton's method [Scheme][10]
+    * [Ex 10][0110] Ackermann's Function [Scheme][10]
+    * [Ex 11][0111] Tree Recursion [Scheme][11]
+    * [Ex 12][0112] Pascal's Triangle [Scheme][12]
+    * [Ex 13][0113] Closest integer to fibonacci [Scheme][13]
+    * [Ex 14][0114] Counting Change [Scheme][14]
+    * [Ex 15][0115] Aproximating Sine [Scheme][15]
+    * [Ex 16][0116] Exponentiation in logarithmic time [Scheme][16]
+    * [Ex 17][0117] Exponentiation in logarithmic time(2) [Scheme][17]
+    * [Ex 18][0118] Multiply using add, double, halve [Scheme][18]
+    * [Ex 19][0119] Russian Peasant [Scheme][19]
     * [Ex 28][0128] Miller-Rabin primality test [Scheme][28]
 *  Formulating Abstractions with Higher-Order Procedures
     * [Ex 29][0129] Simpson rule [Scheme][29]
@@ -33,7 +42,10 @@
 [0114]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.14
 [0115]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.15
 [0116]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.16
-[0115]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.15
+[0117]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.17
+[0118]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.18
+[0119]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.19
+[0120]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.20
 [0128]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.28
 [0129]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_thm_1.29
 [0146]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_thm_1.46
@@ -47,7 +59,17 @@
 [7]: section_1/good_enough.ss
 [8]: section_1/cube_root.ss
 [9]: section_2/peano_arithmetic.ss
-[10]: cube_root.ss
+[10]: section_2/ackermann.ss
+[11]: section_2/tree_recursion.ss
+[12]: section_2/pascals_triangle.ss
+[13]: section_2/closest_integer.ss
+[14]: section_2/count_change.ss
+[15]: section_2/sine.ss
+[16]: section_2/exponentiation.ss
+[17]: section_2/exponentiation.ss
+[18]: section_2/exponentiation.ss
+[19]: section_2/russian_peasant.ss
+[20]: section_2/gcd.ss
 [28]: fermat.ss
 [29]: simpson.ss
 [46]: iterative_improvement.ss

@@ -17,6 +17,6 @@
 
   (exp-log-iter 1 n))
 
-(load "util.scm")
-(asserteq "exp 9^3" (exp 9 3) (* 9 9 9)) 
-(asserteq "exp 9^9" (exp 9 9) (* 9 9 9 9 9 9 9 9 9)) 
+(load "../../util/unittest.ss")
+(asserteq (exp 9 3) (* 9 9 9)) 
+(asserteq (exp 9 9) (* 9 9 9 9 9 9 9 9 9)) 

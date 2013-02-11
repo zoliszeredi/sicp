@@ -6,6 +6,10 @@
 	((= kinds-of-coints 5) 50)))
 
 (define (cc amount kinds-of-coints)
+;;  (display (format #f
+;;		   "amount : ~a counts : ~a~%"
+;;		   amount
+;;		   kinds-of-coints))
   (cond ((= amount 0) 1)
 	((or (< amount 0) (= kinds-of-coints 0)) 0)
 	(else (+ (cc amount 
@@ -18,5 +22,4 @@
   (cc amount 5))
 
 (load "../../util/unittest.ss")
-
-(asserteq (count-change 100) 292)
+;; (asserteq (count-change 100) 292)
