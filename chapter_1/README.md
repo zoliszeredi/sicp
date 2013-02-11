@@ -21,6 +21,14 @@
     * [Ex 17][0117] Exponentiation in logarithmic time(2) [Scheme][17]
     * [Ex 18][0118] Multiply using add, double, halve [Scheme][18]
     * [Ex 19][0119] Russian Peasant [Scheme][19]
+    * [Ex 20][0120] [Scheme][20]
+    * [Ex 21][0121] [Scheme][21]
+    * [Ex 22][0122] [Scheme][22]
+    * [Ex 23][0123] [Scheme][23]
+    * [Ex 24][0124] [Scheme][24]
+    * [Ex 25][0125] [Scheme][25]
+    * [Ex 26][0126] [Scheme][26]
+    * [Ex 27][0127] [Scheme][27]
     * [Ex 28][0128] Miller-Rabin primality test [Scheme][28]
 *  Formulating Abstractions with Higher-Order Procedures
     * [Ex 29][0129] Simpson rule [Scheme][29]
@@ -46,6 +54,13 @@
 [0118]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.18
 [0119]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.19
 [0120]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.20
+[0121]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.21
+[0122]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.22
+[0123]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.23
+[0124]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.24
+[0125]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.25
+[0126]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.26
+[0127]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.27
 [0128]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-11.html#%_thm_1.28
 [0129]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_thm_1.29
 [0146]: http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_thm_1.46
@@ -70,6 +85,13 @@
 [18]: section_2/exponentiation.ss
 [19]: section_2/russian_peasant.ss
 [20]: section_2/gcd.ss
-[28]: fermat.ss
-[29]: simpson.ss
+[21]: section_2/
+[22]: section_2/
+[23]: section_2/
+[24]: section_2/
+[25]: section_2/
+[26]: section_2/
+[27]: section_2/
+[28]: section_2/fermat.ss
+[29]: section_2/simpson.ss
 [46]: iterative_improvement.ss

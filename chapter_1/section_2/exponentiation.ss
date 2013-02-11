@@ -1,8 +1,4 @@
 (define (exp b n)
-  (define (even number)
-    (= (remainder number 2) 0))
-  (define (square number)
-    (* number number))
   (define (exp-iter product counter)
     (if (= counter 0)
 	product
@@ -10,11 +6,11 @@
 		  (- counter 1))))
   (define (exp-log-iter product counter)
     (cond ((= counter 0) product)
-	  ((even counter) (exp-log-iter (square product)
-					 (/ counter 2)))
+	  ((even? counter) 
+	   (exp-log-iter ((lambda (x)(* x x)) product)
+			 (/ counter 2)))
 	  (else (exp-log-iter (* product b) 
 			      (- counter 1)))))
-
   (exp-log-iter 1 n))
 
 (load "../../util/unittest.ss")
