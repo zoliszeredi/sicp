@@ -1,18 +1,33 @@
-(define (exp b n)
-  (define (exp-iter product counter)
-    (if (= counter 0)
-	product
-	(exp-iter (* product b) 
-		  (- counter 1))))
-  (define (exp-log-iter product counter)
-    (cond ((= counter 0) product)
-	  ((even? counter) 
-	   (exp-log-iter ((lambda (x)(* x x)) product)
-			 (/ counter 2)))
-	  (else (exp-log-iter (* product b) 
-			      (- counter 1)))))
-  (exp-log-iter 1 n))
-
 (load "../../util/unittest.ss")
-(asserteq (exp 9 3) (* 9 9 9)) 
-(asserteq (exp 9 9) (* 9 9 9 9 9 9 9 9 9)) 
+
+(define (power base exponent)
+  ;; Computes the 'base' to the power of 'exponent'
+  ;; The operation is done in O(n) time
+  (define (power-iter combiner counter)
+    (cond ((zero? counter) combiner)
+	  (else (power-iter (* base combiner)
+			    (1- counter)))))
+  (power-iter 1 exponent))
+
+(define (power-fast base exponent)
+  ;; Computes the 'base' to the power of 'exponent'
+  ;; The operation is done in O(lg n) time
+  (define (power-fast-iter product base exponent)
+    (cond ((zero? exponent) product)
+	  ((odd? exponent) (power-fast-iter (* product base)
+					    base
+					    (- exponent 1)))
+	  ((even? exponent) (power-fast-iter product
+					     (* base base)
+					     (/ exponent 2)))
+	  (else (error "power-fast-iter error"))))
+  (power-fast-iter 1 base exponent))
+
+(asserteq (power 5 0) (expt 5 0))
+(asserteq (power 2 10) (expt 2 10))
+(asserteq (power 3 13) (expt 3 13))
+(asserteq (power 12 15) (expt 12 15))
+(asserteq (power-fast 5 0) (expt 5 0))
+(asserteq (power-fast 2 10) (expt 2 10))
+(asserteq (power-fast 3 13) (expt 3 13))
+(asserteq (power-fast 12 15) (expt 12 15))

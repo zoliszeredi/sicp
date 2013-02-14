@@ -21,7 +21,7 @@
     * [Ex 17][0117] Exponentiation in logarithmic time(2) [Scheme][17]
     * [Ex 18][0118] Multiply using add, double, halve [Scheme][18]
     * [Ex 19][0119] Russian Peasant [Scheme][19]
-    * [Ex 20][0120] [Scheme][20]
+    * [Ex 20][0120] Greatest Common Divisor [Scheme][20]
     * [Ex 21][0121] [Scheme][21]
     * [Ex 22][0122] [Scheme][22]
     * [Ex 23][0123] [Scheme][23]
@@ -82,7 +82,7 @@
 [15]: section_2/sine.ss
 [16]: section_2/exponentiation.ss
 [17]: section_2/exponentiation.ss
-[18]: section_2/exponentiation.ss
+[18]: section_2/multiplication.ss
 [19]: section_2/russian_peasant.ss
 [20]: section_2/gcd.ss
 [21]: section_2/
