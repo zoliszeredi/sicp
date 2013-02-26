@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+;;(load "../../util/unittest.ss")
 
 (define (prime? number)
   (= number 
@@ -39,4 +39,11 @@
 (define (factor-of-number? number)
   (lambda (factor)
     (zero? (remainder number factor))))
+
+
+(let ((out-line-format "199:~a~%1999:~a~%:19999:~a~%")
+      (sd-199 (smallest-divisor 199))
+      (sd-1999 (smallest-divisor 1999))
+      (sd-19999 (smallest-divisor 19999)))
+  (display (format #f out-line-format sd-199 sd-1999 sd-19999)))
 

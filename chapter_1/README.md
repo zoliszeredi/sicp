@@ -22,7 +22,7 @@
     * [Ex 18][0118] Multiply using add, double, halve [Scheme][18]
     * [Ex 19][0119] Russian Peasant [Scheme][19]
     * [Ex 20][0120] Greatest Common Divisor [Scheme][20]
-    * [Ex 21][0121] [Scheme][21]
+    * [Ex 21][0121] Smallest Divisor [Scheme][21]
     * [Ex 22][0122] [Scheme][22]
     * [Ex 23][0123] [Scheme][23]
     * [Ex 24][0124] [Scheme][24]
@@ -85,7 +85,7 @@
 [18]: section_2/multiplication.ss
 [19]: section_2/russian_peasant.ss
 [20]: section_2/gcd.ss
-[21]: section_2/
+[21]: section_2/prime.ss
 [22]: section_2/
 [23]: section_2/
 [24]: section_2/
