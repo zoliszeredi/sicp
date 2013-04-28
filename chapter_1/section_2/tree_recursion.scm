@@ -1,3 +1,5 @@
+(use-modules (util unittest))
+
 (define (f-rec n)
   (if (< n 3)
       n
@@ -19,5 +21,4 @@
 (define (f-iter n)
   (f-iter-helper 0 1 2 0 n))
 
-(load "../../util/unittest.ss")
 (asserteq (f-rec 25) (f-iter 25))

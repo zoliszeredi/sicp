@@ -1,3 +1,5 @@
+(use-modules (util unittest))
+
 (define (first-denomination kinds-of-coints)
   (cond ((= kinds-of-coints 1) 1)
 	((= kinds-of-coints 2) 5)
@@ -17,8 +19,7 @@
 (define (count-change amount)
   (cc amount 5))
 
-;; (load "../../util/unittest.ss")
-;; (asserteq (count-change 100) 292)
+(asserteq (count-change 100) 292)
 
 ;; count-change for 11 cents
 ;; (cc 11 3)

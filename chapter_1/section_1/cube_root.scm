@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)

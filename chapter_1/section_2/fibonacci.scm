@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define (fibonacci-rec num)
   (if (< num 2)

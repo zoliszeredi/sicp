@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define  (fibonacci-iter num)
   (define (iter current-term last-term count)

@@ -2,6 +2,8 @@
 
 ### My journey through the book
 
+I use GNU guile as the scheme interpreter.
+
 + [Chapter 1][1] : Building Abstractions with Procedures
 + [Chapter 2][2] : Building Abstractions with Data
 + [Chapter 3][3] : Modularity, objects, state

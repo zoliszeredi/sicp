@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define (multiply first second)
   (if (= second 0)

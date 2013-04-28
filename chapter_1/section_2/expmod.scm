@@ -1,3 +1,5 @@
+(use-modules (util unittest))
+
 (define (expmod base exponent mod)
   (let ((square (lambda (x) (* x x))))
     (cond ((zero? exponent) 1)
@@ -12,7 +14,6 @@
 				      mod)) 
 		      mod)))))
 
-(load "../../util/unittest.ss")
 (asserteq (expmod 2 10 3) 
 	  (remainder (expt 2 10) 3))
 (asserteq (expmod 5 3 11) 

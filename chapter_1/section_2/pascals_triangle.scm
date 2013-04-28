@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define (pascals-triangle-elem depth width)
   ;; 1

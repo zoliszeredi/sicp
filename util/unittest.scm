@@ -1,3 +1,6 @@
+(define-module (util unittest)
+  #:export (asserteq))
+
 (define (asserteq first second)
   (cond ((integers? first second) (assert-int-eq first second))
 	((reals? first second) (assert-real-eq first second))))
@@ -18,7 +21,7 @@
 
 (define (real-equal? first second . decimals-accuracy)
   (let ((epsilon (if (null? decimals-accuracy) 
-		     (expt 10 -5) 
+		     (expt 10 -3) 
 		     (expt 10 (- (car decimals-accuracy)))))
 	(delta (abs (- first second))))
     (>= epsilon delta)))

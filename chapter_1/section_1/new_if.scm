@@ -1,3 +1,5 @@
+(use-modules (util unittest))
+
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)
 	(else else-clause)))
@@ -27,8 +29,6 @@
 
 (define (average x y)
   (/ (+ x y) 2))
-
-(load "../../util/unittest.ss")
 
 (define (test-square-root)
   (define (try-integers-range start stop)

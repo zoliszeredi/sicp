@@ -1,4 +1,4 @@
-(load "../../util/unittest.ss")
+(use-modules (util unittest))
 
 (define (power base exponent)
   ;; Computes the 'base' to the power of 'exponent'
