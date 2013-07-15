@@ -1,22 +1,44 @@
-(define error-message "Insuficient Funds")
+(define (secure-account ammount password)
+  (let ((current-ammount ammount)
+        (stored-password password)
+        (current-consecutive-fails 0)
+        (max-consecutive-fails 7))
+    (let ((withdraw (lambda (x)
+                      (begin 
+                        (set! current-ammount (- current-ammount x))
+                        current-ammount)))
+          (deposit (lambda (x)
+                     (begin
+                       (set! current-ammount (+ current-ammount x))
+                       current-ammount)))
+          (correct-password? (lambda (password)
+                               (let ((state (eq? password stored-password)))
+                                 (if (not state)
+                                     (begin (set! current-consecutive-fails
+                                                  (+ 1 current-consecutive-fails))
+                                            state)
+                                     state))))
+          (call-the-cops (lambda () (error "Call The Cops!"))))
+      (let ((dispatch (lambda (x)
+                        (cond ((eq? 'withdraw x) withdraw)
+                              ((eq? 'deposit x) deposit)
+                              (else (error "Uknown Operation!"))))))
+        (lambda (operation password)
+          (cond ((correct-password? password) (dispatch operation))
+                ((= current-consecutive-fails max-consecutive-fails) (call-the-cops))
+                (else 
+                 (display "Unauthorized Operation!\n"))))))))
 
-(define new-withdraw
-  (let ((balance 100))
-    (lambda (amount)
-      (if (>= balance amount)
-          (begin
-            (set! balance (- balance amount))
-            balance)
-          error-message))))
-
-
-(define (make-withdraw balance)
-  (lambda (amount)
-    (if (>= balance amount)
-        (begin (set! balance (- balance amount))
-               balance)
-        error-message)))
-
-
-(define W1 (make-withdraw 100))
-(W1 50)
+(define (main)
+  (let ((A (secure-account 100 'foobar)))
+    (begin
+      (display ((A 'withdraw 'foobar) 20)) (newline)
+      (display ((A 'deposit 'foobar) 16)) (newline)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass)
+      (A 'withdraw 'badbass))))
+(main)
