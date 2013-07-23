@@ -13,7 +13,7 @@
 (define (cesaro-test)
   (= (gcd (rand) (rand)) 1))
 
-(define (Point values)
+(define (Point . values)
   (lambda (operation)
     (cond ((eq? operation 'x) (car values))
           ((eq? operation 'y) (cadr values))
@@ -73,5 +73,3 @@
 (define (main)
   (display (aproximate-pi))
   (newline))
-
-
