@@ -1,25 +1,25 @@
 (define input-prompt ";;; Query input:")
 (define ouput-prompt ";;; Query results:")
+(define prompt-for-input display)
 
 (define (query-driver-loop)
   (prompt-for-input input-prompt)
-  (let ((q (query-syntax-process (read))))
-    (cond ((assertion-to-be-added? q)
-           (add-rule-to-assertion! (add-assertion-body q))
-           (newline)
-           (display "Assertion added to data base.")
+  (let ((query (query-syntax-process (read))))
+    (cond ((assertion-to-be-added? query)
+           (add-rule-to-assertion! (add-assertion-body query))
+           (newline) (display "Assertion added to data base.")
            (query-driver-loop))
           (else
-           (newline)
-           (display output-prompt)
+           (newline) (display output-prompt)
            (display-stream
             (stream-map
              (lambda (frame)
-               (instantiate q
-                            frame
-                            (lambda (v f)
-                              (contract-question-mark v))))
-             (qeval q (singleton-stream '()))))
+               (instantiate 
+                   query
+                   frame
+                 (lambda (v f)
+                   (contract-question-mark v))))
+             (qeval query (singleton-stream '()))))
            (query-driver-loop)))))
 
 (define (instantiate exp frame unbound-var-handler)
@@ -90,7 +90,7 @@
          (args exp)))
 
 (define (always-true ignore frame-stream) frame-stream)
-                 
+
 (put 'and 'qeval conjoin)
 (put 'and 'qeval disjuncts)
 (put 'and 'qeval negate)
@@ -198,7 +198,113 @@
                (tree-walk (cdr e))))
           (else #f)))
   (tree-walk exp))
-      
 
 
+(define (stream-append-delayed stream delayed-stream)
+  (if (stream-null? stream)
+      (force delayed-stream)
+      (cons-stream (stream-car stream)
+                   (stream-append-delayed (stream-cdr stream)
+                                          delayed-stream))))
 
+
+(define (interleave-delayed stream delayed-stream)
+  (if (stream-null? stream)
+      (force delayed-stream)
+      (cons-stream (stream-car stream)
+                   (interleave-delayed (force delayed-stream)
+                                       (delay (stream-cdr stream))))))
+
+
+(define (stream-map procedure stream)
+  (if (stream-null? stream)
+      the-empty-stream
+      (cons-stream (procedure (stream-car stream))
+                   (stream-map procedure (stream-cdr stream)))))
+
+
+(define (stream-flatmap procedure stream)
+  (flatten-stream (stream-map procedure stream)))
+
+
+(define (flatten-stream stream)
+  (if (stream-null? stream)
+      the-empty-stream
+      (interleave-delayed (stream-car stream)
+                          (delay
+                            (flatten-stream (stream-cdr stream))))))
+
+
+(define (singleton-stream x)
+  (cons-stream x the-empty-stream))
+
+
+(define (type exp)
+  (if (pair? exp)
+      (car exp)
+      (error "Unknown expression TYPE" exp)))
+
+
+(define (contents exp)
+  (if (par? exp)
+      (cdr exp)
+      (error "Unknown expression CONTENTS" exp)))
+
+
+(define (assertion-to-be-added? exp)
+  (eq? (type exp) 'assert!))
+
+
+(define (add-assertion-body exp)
+  (car contents exp))
+
+(define (empty-conjunction? exps) (null? exps))
+(define (first-conjunct exps) (car exps))
+(define (rest-conjuncts exps) (cdr exps))
+(define (empty-disjunction? exps) (null? exps))
+(define (first-disjunct exps) (car exps))
+(define (rest-disjuncts exps) (cdr exps)
+(define (negated-query exps) (car exps))
+(define (predicate exps) (car exps))
+(define (args exps) (cdr exps))
+(define (rule? statement) (tagged-list? statement 'rule))
+(define (conclusion rule) (cadr rule))
+(define (rule-body rule)
+  (if (null? (cddr rule))
+      '(always-true)
+      (caddr rule)))
+
+(define (query-syntax-process exp)
+  (map-over-symbols expand-question-mark exp))
+
+(define (map-over-symbols procedure exp)
+  (cond ((pair? exp)
+         (cons (map-over-symbols procedure (car exp))
+               (map-over-symbols procedure (cdr exp))))
+        ((symbol? exp) (procedure exp))
+        (else exp)))
+
+(define (expand-question-mark symbol)
+  (let ((chars (symbol->string symbol)))
+    (if (string=? (substring chars 0 1) "?")
+        (list '? (string->symbol (sybstring chars 1 (string-length chards))))
+        symbol)))
+
+(define (var? exp)
+  (tagged-list? exp '?))
+
+(define (constant-symbol? exp) (symbol? exp))
+
+(define rule-counter 0)
+(define (new-rule-application-id)
+  (set! rule-counter (+ 1 rule-counter))
+  rule-counter)
+(define (make-new-variable var rule-application-id)
+  (cons '? (cons rule-application-id (cdr var))))
+
+(define (contract-question-mark variable)
+  (string->symbol
+   (string-append "?"
+                  (if (number? (cadr variable))
+                      (string-append (symbol->string (caddr variable)) "-" (number->string (cadr  variable)))
+                      (symbol->string (cadr variable))))))
