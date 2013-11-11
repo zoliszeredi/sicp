@@ -254,16 +254,15 @@
 (define (assertion-to-be-added? exp)
   (eq? (type exp) 'assert!))
 
-
 (define (add-assertion-body exp)
-  (car contents exp))
+  (car (contents exp)))
 
 (define (empty-conjunction? exps) (null? exps))
 (define (first-conjunct exps) (car exps))
 (define (rest-conjuncts exps) (cdr exps))
 (define (empty-disjunction? exps) (null? exps))
 (define (first-disjunct exps) (car exps))
-(define (rest-disjuncts exps) (cdr exps)
+(define (rest-disjuncts exps) (cdr exps))
 (define (negated-query exps) (car exps))
 (define (predicate exps) (car exps))
 (define (args exps) (cdr exps))
