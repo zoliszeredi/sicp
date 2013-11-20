@@ -408,7 +408,7 @@
 
 
 (define (contents exp)
-  (if (par? exp)
+  (if (pair? exp)
       (cdr exp)
       (error "Unknown expression CONTENTS" exp)))
 
