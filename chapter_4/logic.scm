@@ -1,5 +1,81 @@
+(define (tagged-list? expression tag)
+  (if (pair? expression)
+      (eq? (car expression) tag)
+      #f))
+
+(define (lookup key table)
+  (let ((record (assoc key (cdr table))))
+    (if record (cdr record)
+        #f)))
+
+(define (assoc key records)
+  (cond ((null? records) #f)
+        ((equal? key (caar records)) (car records))
+        (else (assoc key (cdr records)))))
+
+(define (make-table)
+  (let ((local-table (list '*table*)))
+       (define (lookup key-1 key-2)
+         (let ((subtable (assoc key-1 (cdr local-table))))
+           (if subtable
+               (let ((record (assoc key-2 (cdr subtable))))
+                 (if record
+                     (cdr record)
+                     #f))
+               #f)))
+       (define (insert! key-1 key-2 value)
+         (let ((subtable (assoc key-1 (cdr local-table))))
+           (if subtable
+               (let ((record (assoc key-2 (cdr subtable))))
+                 (if record
+                     (set-cdr! record value)
+                     (set-cdr! subtable
+                               (cons (cons key-2 value)
+                                     (cdr subtable)))))
+               (set-cdr! local-table
+                         (cons (list key-1
+                                     (cons key-2 value))
+                               (cdr local-table)))))
+         'ok)
+
+       (define (dispatch m)
+         (cond ((eq? m 'lookup-proc) lookup)
+               ((eq? m 'insert-proc!) insert!)
+               (else (error "type error" m))))
+       dispatch))
+
+
+(define operation-table (make-table))
+(define get (operation-table 'lookup-proc))
+(define put (operation-table 'insert-proc!))
+
+
+(define (stream-for-each proc stream)
+  (if (stream-null? stream)
+      'done
+      (begin (proc (stream-car stream))
+             (stream-for-each proc (stream-cdr stream)))))
+
+(define (display-stream stream)
+  (stream-for-each display-line stream))
+
+(define (display-line line)
+  (newline)
+  (display line))
+
+(define (cons-stream first rest)
+  (cons first (delay rest)))
+
+(define stream-null? null?)
+(define (stream-car stream)
+  (car stream))
+(define (stream-cdr stream)
+  (force (cdr stream)))
+
+(define the-empty-stream '())
+
 (define input-prompt ";;; Query input:")
-(define ouput-prompt ";;; Query results:")
+(define output-prompt ";;; Query results:")
 (define prompt-for-input display)
 
 (define (query-driver-loop)
@@ -14,7 +90,7 @@
            (display-stream
             (stream-map
              (lambda (frame)
-               (instantiate 
+               (instantiate
                    query
                    frame
                  (lambda (v f)
@@ -55,7 +131,7 @@
                (qeval (first-conjunct conjuncts)
                       frame-stream))))
 
-(define (disjoin disjoints frame-stream)
+(define (disjoin disjuncts frame-stream)
   (if (empty-disjunction? disjuncts)
       the-empty-stream
       (interleave-delayed
@@ -92,7 +168,7 @@
 (define (always-true ignore frame-stream) frame-stream)
 
 (put 'and 'qeval conjoin)
-(put 'and 'qeval disjuncts)
+(put 'and 'qeval disjoin)
 (put 'and 'qeval negate)
 (put 'and 'qeval lisp-value)
 (put 'always-true 'qeval always-true)
@@ -200,6 +276,92 @@
   (tree-walk exp))
 
 
+(define (fetch-assertions pattern frame)
+  (if (use-index? pattern)
+      (get-indexed-assertions pattern)
+      (get-all-assertions)))
+
+(define (get-all-assertions) THE-ASSERTIONS)
+
+(define (get-indexed-assertions pattern)
+  (get-stream (index-key-of pattern) 'assertion-stream))
+
+(define (get-stream key1 key2)
+  (let ((stream (get key1 key2)))
+    (if stream stream
+        the-empty-stream)))
+
+(define THE-RULES the-empty-stream)
+
+(define (fetch-rules pattern frame)
+  (if (use-index? pattern)
+      (get-indexed-rules pattern)
+      (get-all-rules)))
+
+(define (getl-all-rules) THE-RULES)
+
+(define (get-indexed-rules pattern)
+  (stream-append
+   (get-stream (index-key-of pattern) 'rule-stream)
+   (get-stream '? 'rule-stream)))
+
+(define (add-rule-or-assertion! assertion)
+  (if (rule? assertion)
+      (add-rule! assertion)
+      (add-assertion! assertion)))
+
+(define (add-assertion! assertion)
+  (store-assertion-in-index assertion)
+  (let ((old-assertions THE-ASSERTIONS))
+    (set! THE-ASSERTIONS
+          (cons-stream assertion old-assertions))
+    'ok))
+
+(define (add-rule! rule)
+  (store-rule-in-index rule)
+  (let ((old-rules THE-RULES))
+    (set! THE-RULES (cons-stream rule old-rules))
+    'ok))
+
+(define (store-assertion-in-index assertion)
+  (if (indexable? assertion)
+      (let ((key (index-key-of assertion)))
+        (let ((current-assertion-stream
+               (get-stream key 'assertion-stream)))
+        (put key
+             'assertion-stream
+             (cons-stream assertion
+                          current-assertion-stream))))))
+
+(define (store-rule-in-index rule)
+  (let ((pattern (conclusion rule)))
+    (if (indexable? pattern)
+        (let ((key (index-key-of pattern)))
+          (let ((current-rule-stream
+                 (get-stream key 'rule-stream)))
+            (put key
+                 'rule-stream
+                 (cons-stream rule
+                              current-rule-stream)))))))
+
+(define (indexable? pattern)
+  (or (constant-symbol? (car pattern))
+      (var? (car pattern))))
+
+(define (index-key-of pattern)
+  (let ((key (car pattern)))
+    (if (var? key) '?
+        key)))
+
+(define (use-index? pattern)
+  (constant-symbol? (car pattern)))
+
+(define (stream-append first second)
+  (if (stream-null? first)
+      second
+      (cons-stream (stream-car first)
+                   (stream-append (stream-cdr first) second))))
+
 (define (stream-append-delayed stream delayed-stream)
   (if (stream-null? stream)
       (force delayed-stream)
@@ -286,7 +448,7 @@
 (define (expand-question-mark symbol)
   (let ((chars (symbol->string symbol)))
     (if (string=? (substring chars 0 1) "?")
-        (list '? (string->symbol (sybstring chars 1 (string-length chards))))
+        (list '? (string->symbol (substring chars 1 (string-length chars))))
         symbol)))
 
 (define (var? exp)
@@ -305,5 +467,9 @@
   (string->symbol
    (string-append "?"
                   (if (number? (cadr variable))
-                      (string-append (symbol->string (caddr variable)) "-" (number->string (cadr  variable)))
+                      (string-append (symbol->string (caddr variable)) "-"
+                                     (number->string (cadr  variable)))
                       (symbol->string (cadr variable))))))
+
+
+(query-driver-loop)
