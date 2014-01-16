@@ -1,88 +1,18 @@
-(define (tagged-list? expression tag)
-  (if (pair? expression)
-      (eq? (car expression) tag)
-      #f))
-
-(define (lookup key table)
-  (let ((record (assoc key (cdr table))))
-    (if record (cdr record)
-        #f)))
-
-(define (assoc key records)
-  (cond ((null? records) #f)
-        ((equal? key (caar records)) (car records))
-        (else (assoc key (cdr records)))))
-
-(define (make-table)
-  (let ((local-table (list '*table*)))
-       (define (lookup key-1 key-2)
-         (let ((subtable (assoc key-1 (cdr local-table))))
-           (if subtable
-               (let ((record (assoc key-2 (cdr subtable))))
-                 (if record
-                     (cdr record)
-                     #f))
-               #f)))
-       (define (insert! key-1 key-2 value)
-         (let ((subtable (assoc key-1 (cdr local-table))))
-           (if subtable
-               (let ((record (assoc key-2 (cdr subtable))))
-                 (if record
-                     (set-cdr! record value)
-                     (set-cdr! subtable
-                               (cons (cons key-2 value)
-                                     (cdr subtable)))))
-               (set-cdr! local-table
-                         (cons (list key-1
-                                     (cons key-2 value))
-                               (cdr local-table)))))
-         'ok)
-
-       (define (dispatch m)
-         (cond ((eq? m 'lookup-proc) lookup)
-               ((eq? m 'insert-proc!) insert!)
-               (else (error "type error" m))))
-       dispatch))
-
-
-(define operation-table (make-table))
-(define get (operation-table 'lookup-proc))
-(define put (operation-table 'insert-proc!))
-
-
-(define (stream-for-each proc stream)
-  (if (stream-null? stream)
-      'done
-      (begin (proc (stream-car stream))
-             (stream-for-each proc (stream-cdr stream)))))
-
-(define (display-stream stream)
-  (stream-for-each display-line stream))
-
-(define (display-line line)
-  (newline)
-  (display line))
-
-(define (cons-stream first rest)
-  (cons first (delay rest)))
-
-(define stream-null? null?)
-(define (stream-car stream)
-  (car stream))
-(define (stream-cdr stream)
-  (force (cdr stream)))
-
-(define the-empty-stream '())
+;; (use-modules (ice-9 r5rs))
+(load "utils.scm")
+(load "streams.scm")
 
 (define input-prompt ";;; Query input:")
+
 (define output-prompt ";;; Query results:")
+
 (define prompt-for-input display)
 
 (define (query-driver-loop)
   (prompt-for-input input-prompt)
   (let ((query (query-syntax-process (read))))
     (cond ((assertion-to-be-added? query)
-           (add-rule-to-assertion! (add-assertion-body query))
+           (add-rule-or-assertion! (add-assertion-body query))
            (newline) (display "Assertion added to data base.")
            (query-driver-loop))
           (else
@@ -90,11 +20,8 @@
            (display-stream
             (stream-map
              (lambda (frame)
-               (instantiate
-                   query
-                   frame
-                 (lambda (v f)
-                   (contract-question-mark v))))
+               (instantiate query frame (lambda (v f)
+					  (contract-question-mark v))))
              (qeval query (singleton-stream '()))))
            (query-driver-loop)))))
 
@@ -152,7 +79,7 @@
   (stream-flatmap
    (lambda (frame)
      (if (execute
-          (instanciate
+          (instantiate
            call
            frame
            (lambda (v f)
@@ -160,6 +87,8 @@
          (singleton-stream frame)
          the-empty-stream))
    frame-stream))
+
+(define user-initial-environment scheme-report-environment)
 
 (define (execute exp)
   (apply (eval (predicate exp) user-initial-environment)
@@ -201,7 +130,7 @@
 (define (extend-if-consistent var dat frame)
   (let ((binding (binding-in-frame var frame)))
     (if binding
-        (pettern-match (binding-value binding) dat frame)
+        (pattern-match (binding-value binding) dat frame)
         (extend var dat frame))))
 
 (define (apply-rules pattern frame)
@@ -219,7 +148,7 @@
       (if (eq? unify-result 'failed)
           the-empty-stream
           (qeval (rule-body clean-rule)
-                 (singleton-stram unify-result))))))
+                 (singleton-stream unify-result))))))
 
 (define (rename-variables-in rule)
   (let ((rule-application-id (new-rule-application-id)))
@@ -275,6 +204,7 @@
           (else #f)))
   (tree-walk exp))
 
+(define THE-ASSERTIONS the-empty-stream)
 
 (define (fetch-assertions pattern frame)
   (if (use-index? pattern)
@@ -286,11 +216,6 @@
 (define (get-indexed-assertions pattern)
   (get-stream (index-key-of pattern) 'assertion-stream))
 
-(define (get-stream key1 key2)
-  (let ((stream (get key1 key2)))
-    (if stream stream
-        the-empty-stream)))
-
 (define THE-RULES the-empty-stream)
 
 (define (fetch-rules pattern frame)
@@ -298,7 +223,7 @@
       (get-indexed-rules pattern)
       (get-all-rules)))
 
-(define (getl-all-rules) THE-RULES)
+(define (get-all-rules) THE-RULES)
 
 (define (get-indexed-rules pattern)
   (stream-append
@@ -356,62 +281,15 @@
 (define (use-index? pattern)
   (constant-symbol? (car pattern)))
 
-(define (stream-append first second)
-  (if (stream-null? first)
-      second
-      (cons-stream (stream-car first)
-                   (stream-append (stream-cdr first) second))))
-
-(define (stream-append-delayed stream delayed-stream)
-  (if (stream-null? stream)
-      (force delayed-stream)
-      (cons-stream (stream-car stream)
-                   (stream-append-delayed (stream-cdr stream)
-                                          delayed-stream))))
-
-
-(define (interleave-delayed stream delayed-stream)
-  (if (stream-null? stream)
-      (force delayed-stream)
-      (cons-stream (stream-car stream)
-                   (interleave-delayed (force delayed-stream)
-                                       (delay (stream-cdr stream))))))
-
-
-(define (stream-map procedure stream)
-  (if (stream-null? stream)
-      the-empty-stream
-      (cons-stream (procedure (stream-car stream))
-                   (stream-map procedure (stream-cdr stream)))))
-
-
-(define (stream-flatmap procedure stream)
-  (flatten-stream (stream-map procedure stream)))
-
-
-(define (flatten-stream stream)
-  (if (stream-null? stream)
-      the-empty-stream
-      (interleave-delayed (stream-car stream)
-                          (delay
-                            (flatten-stream (stream-cdr stream))))))
-
-
-(define (singleton-stream x)
-  (cons-stream x the-empty-stream))
-
-
 (define (type exp)
   (if (pair? exp)
       (car exp)
       (error "Unknown expression TYPE" exp)))
 
-
 (define (contents exp)
   (if (pair? exp)
       (cdr exp)
       (error "Unknown expression CONTENTS" exp)))
-
 
 (define (assertion-to-be-added? exp)
   (eq? (type exp) 'assert!))
@@ -420,16 +298,27 @@
   (car (contents exp)))
 
 (define (empty-conjunction? exps) (null? exps))
+
 (define (first-conjunct exps) (car exps))
+
 (define (rest-conjuncts exps) (cdr exps))
+
 (define (empty-disjunction? exps) (null? exps))
+
 (define (first-disjunct exps) (car exps))
+
 (define (rest-disjuncts exps) (cdr exps))
+
 (define (negated-query exps) (car exps))
+
 (define (predicate exps) (car exps))
+
 (define (args exps) (cdr exps))
+
 (define (rule? statement) (tagged-list? statement 'rule))
+
 (define (conclusion rule) (cadr rule))
+
 (define (rule-body rule)
   (if (null? (cddr rule))
       '(always-true)
@@ -457,9 +346,11 @@
 (define (constant-symbol? exp) (symbol? exp))
 
 (define rule-counter 0)
+
 (define (new-rule-application-id)
   (set! rule-counter (+ 1 rule-counter))
   rule-counter)
+
 (define (make-new-variable var rule-application-id)
   (cons '? (cons rule-application-id (cdr var))))
 
@@ -472,4 +363,4 @@
                       (symbol->string (cadr variable))))))
 
 
-(query-driver-loop)
+;; (query-driver-loop)
