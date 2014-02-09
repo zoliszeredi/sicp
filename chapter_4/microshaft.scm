@@ -77,3 +77,19 @@
 	   (and (job ?person (?department . ?x))
 		(not (and (supervisor ?person ?boss)
 			  (job ?boss (?department . ?y)))))))
+
+
+(aa '(meeting acoounting (monday 9am)))
+(aa '(meeting administration (monday 10am)))
+(aa '(meeting computer (wednesday 3pm)))
+(aa '(meeting administration (friday 1pm)))
+(aa '(meeting whole-company (wednesday 4pm)))
+
+(aa '(rule (meeting-time ?person ?day-and-time)
+	   (or (and (meeting ?division ?day-and-time)
+		    (job ?person (?division . ?ignore)))
+	       (meeting whole-company ?day-and-time))))
+
+(aa '(rule (append-to-form () ?x ?x)))
+(aa '(rule (append-to-form (?u . ?v) ?y (?u . ?z))
+	   (append-to-form ?v ?y ?z)))
