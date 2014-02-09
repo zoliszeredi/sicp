@@ -5,7 +5,9 @@
              (stream-for-each proc (stream-cdr stream)))))
 
 (define (display-stream stream)
-  (stream-for-each display-line stream))
+  (stream-for-each (lambda (string)
+		     (display (format #f "~a~%" string)))
+		   stream))
 
 (define (display-line line)
   (newline)

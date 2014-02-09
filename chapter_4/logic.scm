@@ -1,22 +1,24 @@
-;; (use-modules (ice-9 r5rs))
 (load "utils.scm")
 (load "streams.scm")
 
-(define input-prompt ";;; Query input:")
+(use-modules (ice-9 r5rs))
 
-(define output-prompt ";;; Query results:")
+;; (use-modules (srfi srfi-1))
+;; (use-modules (srfi srfi-98))
 
+
+(define prompt-text "~a@qlogic > ")
+(define assert-ok "Assertion added to data base.~%")
 (define prompt-for-input display)
 
 (define (query-driver-loop)
-  (prompt-for-input input-prompt)
+  (display (format #f prompt-text (getenv "USER")))
   (let ((query (query-syntax-process (read))))
     (cond ((assertion-to-be-added? query)
            (add-rule-or-assertion! (add-assertion-body query))
-           (newline) (display "Assertion added to data base.")
+           (display (format #f assert-ok))
            (query-driver-loop))
           (else
-           (newline) (display output-prompt)
            (display-stream
             (stream-map
              (lambda (frame)
@@ -88,7 +90,7 @@
          the-empty-stream))
    frame-stream))
 
-(define user-initial-environment scheme-report-environment)
+(define user-initial-environment (scheme-report-environment 5))
 
 (define (execute exp)
   (apply (eval (predicate exp) user-initial-environment)
@@ -97,9 +99,9 @@
 (define (always-true ignore frame-stream) frame-stream)
 
 (put 'and 'qeval conjoin)
-(put 'and 'qeval disjoin)
-(put 'and 'qeval negate)
-(put 'and 'qeval lisp-value)
+(put 'or 'qeval disjoin)
+(put 'not 'qeval negate)
+(put 'lisp-value 'qeval lisp-value)
 (put 'always-true 'qeval always-true)
 
 (define (find-assertions pattern frame)
@@ -363,4 +365,5 @@
                       (symbol->string (cadr variable))))))
 
 
-;; (query-driver-loop)
+(load "microshaft.scm")
+(query-driver-loop)
