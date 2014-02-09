@@ -47,6 +47,11 @@
 (aa '(salary (Aull DeWitt) 25000))
 (aa '(supervisor (Aull DeWitt) (Warbucks Oliver)))
 
+(aa '(can-do-job (computer wizard) (computer programmer)))
+(aa '(can-do-job (computer wizard) (computer technician)))
+(aa '(can-do-job (computer programmer) (computer programmer trainee)))
+
+
 (aa '(rule (same ?x ?x)))
 (aa '(rule (lives-near ?x ?y)
 	   (and (address ?x (?town . ?street-of-x))
@@ -59,3 +64,16 @@
 	   (or (supervisor ?underling ?boss)
 	       (and (supervisor ?underling ?lieutenant)
 		    (outranked-by ?lieutenant ?boss)))))
+(aa '(rule (replace ?a ?b)
+	   (and (job ?a ?more)
+		(job ?b ?less)
+		(or (same ?more ?less)
+		    (can-do-job ?more ?less))
+		(not (same ?a ?b)))))
+
+;; A big-shot is somebody who does not have a supervisor in their
+;; department
+(aa '(rule (big-shot ?person ?department)
+	   (and (job ?person (?department . ?x))
+		(not (and (supervisor ?person ?boss)
+			  (job ?boss (?department . ?y)))))))
